@@ -1,11 +1,17 @@
 import csv
+import os
+import time
 import speech_recognition as sr
+
+# Create a unique filename based on the current timestamp
+timestamp = time.strftime("%Y%m%d-%H%M%S")
+csv_filename = f"speech_to_text_{timestamp}.csv"
 
 # Initialize recognizer class (for recognizing the speech)
 r = sr.Recognizer()
 
 # Open the CSV file
-with open('/Users/churnika/Desktop/Projects/IoT_Project/Dataset/speech_to_text.csv', 'w', newline='') as file:
+with open(csv_filename, 'w', newline='') as file:
     writer = csv.writer(file)
 
     # Start an infinite loop
@@ -14,6 +20,7 @@ with open('/Users/churnika/Desktop/Projects/IoT_Project/Dataset/speech_to_text.c
         # listening the speech and store in audio_text variable
         with sr.Microphone() as source:
             print("Talk")
+            # Listen for up to 10 seconds of speech
             audio_text = r.listen(source, timeout=10, phrase_time_limit=10)
             print("Time over, thanks")
 
@@ -25,6 +32,8 @@ with open('/Users/churnika/Desktop/Projects/IoT_Project/Dataset/speech_to_text.c
 
             # writing to csv file
             writer.writerow([text])
+            # Flush the buffer to ensure data is written immediately
+            file.flush()
 
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
@@ -39,5 +48,8 @@ with open('/Users/churnika/Desktop/Projects/IoT_Project/Dataset/speech_to_text.c
         except Exception as e:
             print("An error occurred: {0}".format(e))
 
-    # Close the CSV file
-    file.close()
+# Close the CSV file outside the loop
+file.close()
+
+# Print the path to the saved CSV file
+print("CSV file saved at:", os.path.abspath(csv_filename))
