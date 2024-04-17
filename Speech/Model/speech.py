@@ -4,7 +4,7 @@ import time
 import speech_recognition as sr
 
 # Define the directory path where the file will be saved
-directory = "/Users/churnika/Desktop/Projects/IoT_Project/Speech/Dataset"
+directory = r"C:\Users\Jahnavi\Documents\3rd_Year\Y3S2\[E1TA2] ECE352\IoT_Project\Speech\Dataset"
 
 # Create the directory if it doesn't exist
 if not os.path.exists(directory):
