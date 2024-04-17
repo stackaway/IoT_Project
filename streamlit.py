@@ -1,59 +1,13 @@
-# import streamlit as st
-# import subprocess
-# import threading
-
-# # Function to start emotion recognition process
-
-
-# def start_emotion_recognition():
-#     subprocess.Popen(["python", "Emotion-detection/src/emotions_streamlit.py", "--mode", "display"])
-
-# # Function to start speech recognition process
-
-
-# def start_speech_recognition():
-#     subprocess.Popen(["python", "Speech/Model/speech.py"])
-
-
-# # Streamlit UI
-
-
-# def main():
-#     st.title("Emotion and Speech Recognition")
-
-#     # Create buttons to start the processes
-#     if st.button("Start Emotion Recognition"):
-#         threading.Thread(target=start_emotion_recognition).start()
-
-#     if st.button("Start Speech Recognition"):
-#         threading.Thread(target=start_speech_recognition).start()
-
-
-# if __name__ == "__main__":
-#     main()
-
 import streamlit as st
-import subprocess
-import threading
-
-# Function to start emotion recognition process
-
-
-def start_emotion_recognition():
-    emotion_process = subprocess.Popen(["python", "Emotion-detection/src/emotions_streamlit.py", "--mode", "display"])
+import csv
+import os
+import time
+import speech_recognition as sr
 
 # Function to start speech recognition process
 
 
-def start_speech_recognition():
-    # global speech_process
-    # speech_process = subprocess.Popen(["python", "Speech/Model/speech.py"])
-
-    import csv
-    import os
-    import time
-    import speech_recognition as sr
-
+def start_speech_recognition(stop_flag):
     # Define the directory path where the file will be saved
     directory = r"C:\Users\Jahnavi\Documents\3rd_Year\Y3S2\[E1TA2] ECE352\IoT_Project\Speech\Dataset"
 
@@ -63,7 +17,7 @@ def start_speech_recognition():
 
     # Create a unique filename based on the current timestamp
     timestamp = time.strftime("%Y%m%d-%H%M%S")
-    csv_filename = os.path.join(directory, f"speech_to_text_{timestamp}.csv")
+    csv_filename = os.path.join(directory, f"output.csv")
 
     # Initialize recognizer class (for recognizing the speech)
     r = sr.Recognizer()
@@ -73,7 +27,7 @@ def start_speech_recognition():
         writer = csv.writer(file)
 
         # Start an infinite loop
-        while True:
+        while not stop_flag:
             # Reading Microphone as source
             # listening the speech and store in audio_text variable
             with sr.Microphone() as source:
@@ -91,7 +45,7 @@ def start_speech_recognition():
                 print("Text: " + text)
                 st.write(text)
 
-                # writing to csv file
+                # writing to csv filex
                 writer.writerow([text])
                 # Flush the buffer to ensure data is written immediately
                 file.flush()
@@ -104,10 +58,8 @@ def start_speech_recognition():
                 print("Could not request results from Google Speech Recognition service; {0}".format(e))
                 st.write("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-            except KeyboardInterrupt:
-                print("Interrupted by user")
-                st.write("Interrupted by user")
-                break
+            except sr.WaitTimeoutError as e:
+                print("listening timed out while waiting for phrase to start")
 
             except Exception as e:
                 print("An error occurred: {0}".format(e))
@@ -119,23 +71,12 @@ def start_speech_recognition():
     # Print the path to the saved CSV file
     print("CSV file saved at:", csv_filename)
 
-
-# Function to stop emotion recognition process
-
-
 # Streamlit UI
 
 
-def main():
-    st.title("Emotion and Speech Recognition")
-
-    # Create buttons to start the processes
-    if st.button("Start Emotion Recognition"):
-        threading.Thread(target=start_emotion_recognition).start()
-
-    if st.button("Start Speech Recognition"):
-        start_speech_recognition()
-
-
 if __name__ == "__main__":
-    main()
+    st.title("Speech Recognition")
+    stop_flag = False
+    if st.button("Stop Speech Recognition"):
+        stop_flag = True
+    start_speech_recognition(stop_flag)
