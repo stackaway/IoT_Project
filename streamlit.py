@@ -12,6 +12,11 @@ def start_emotion_recognition():
     subprocess.run(["python", "Emotion-detection/src/emotions_streamlit.py", "--mode", "display"])
 
 
+def send_email():
+    subprocess.run(["python", r"Speech\Model\user_speech_streamlit.py"])
+    st.write("Email has been sent!")
+
+
 def start_speech_recognition(stop_flag):
     # Define the directory path where the file will be saved
     directory = r"C:\Users\Jahnavi\Documents\3rd_Year\Y3S2\[E1TA2] ECE352\IoT_Project\Speech\Dataset"
@@ -76,6 +81,7 @@ def start_speech_recognition(stop_flag):
     # Print the path to the saved CSV file
     print("CSV file saved at:", csv_filename)
 
+
 # Streamlit UI
 
 
@@ -91,3 +97,6 @@ if __name__ == "__main__":
         start_speech_recognition(stop_flag)
     if col2.button("Stop Speech Recognition"):
         stop_flag = True
+
+    if st.button("Send email"):
+        send_email()
