@@ -3,8 +3,13 @@ import csv
 import os
 import time
 import speech_recognition as sr
+import subprocess
 
 # Function to start speech recognition process
+
+
+def start_emotion_recognition():
+    subprocess.run(["python", "Emotion-detection/src/emotions_streamlit.py", "--mode", "display"])
 
 
 def start_speech_recognition(stop_flag):
@@ -75,8 +80,14 @@ def start_speech_recognition(stop_flag):
 
 
 if __name__ == "__main__":
-    st.title("Speech Recognition")
+    st.title("Emotion and Speech Recognition")
     stop_flag = False
-    if st.button("Stop Speech Recognition"):
+    if st.button("Start Emotion Recognition"):
+        start_emotion_recognition()
+
+     # Create two columns for the buttons
+    col1, col2 = st.columns(2)
+    if col1.button("Start Speech Recognition"):
+        start_speech_recognition(stop_flag)
+    if col2.button("Stop Speech Recognition"):
         stop_flag = True
-    start_speech_recognition(stop_flag)
