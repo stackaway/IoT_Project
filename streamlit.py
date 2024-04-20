@@ -8,16 +8,12 @@ import subprocess
 # Function to start speech recognition process
 
 
-def start_emotion_recognition():
+def start_emotion_recognition(col1):
+    col1.write("Launching emotion recognition, please wait...")
     subprocess.run(["python", "Emotion-detection/src/emotions_streamlit.py", "--mode", "display"])
 
 
-def send_email():
-    subprocess.run(["python", r"Speech\Model\user_speech_streamlit.py"])
-    st.write("Email has been sent!")
-
-
-def start_speech_recognition(stop_flag):
+def start_speech_recognition(stop_flag, col2):
     # Define the directory path where the file will be saved
     directory = r"C:\Users\Jahnavi\Documents\3rd_Year\Y3S2\[E1TA2] ECE352\IoT_Project\Speech\Dataset"
 
@@ -42,18 +38,18 @@ def start_speech_recognition(stop_flag):
             # listening the speech and store in audio_text variable
             with sr.Microphone() as source:
                 print("Talk")
-                st.write("Talk")
+                col2.write("Please talk...")
                 # Listen for up to 10 seconds of speech
                 audio_text = r.listen(source, timeout=10, phrase_time_limit=10)
                 print("Time over, thanks")
-                st.write("Time over, thanks")
+                col2.write("Time over, thank you")
 
             # recognize_() method will throw a request error if the API is unreachable, hence using exception handling
             try:
                 # using google speech recognition
                 text = r.recognize_google(audio_text)
                 print("Text: " + text)
-                st.write(text)
+                col2.write(text)
 
                 # writing to csv filex
                 writer.writerow([text])
@@ -62,18 +58,18 @@ def start_speech_recognition(stop_flag):
 
             except sr.UnknownValueError:
                 print("Google Speech Recognition could not understand audio")
-                st.write("Google Speech Recognition could not understand audio")
+                col2.write("Google Speech Recognition could not understand audio")
 
             except sr.RequestError as e:
                 print("Could not request results from Google Speech Recognition service; {0}".format(e))
-                st.write("Could not request results from Google Speech Recognition service; {0}".format(e))
+                col2.write("Could not request results from Google Speech Recognition service; {0}".format(e))
 
             except sr.WaitTimeoutError as e:
                 print("listening timed out while waiting for phrase to start")
 
             except Exception as e:
                 print("An error occurred: {0}".format(e))
-                st.write("An error occurred: {0}".format(e))
+                col2.write("An error occurred: {0}".format(e))
 
     # Close the CSV file outside the loop
     file.close()
@@ -82,21 +78,27 @@ def start_speech_recognition(stop_flag):
     print("CSV file saved at:", csv_filename)
 
 
+def send_email():
+    subprocess.run(["python", r"Speech\Model\user_speech_streamlit.py"])
+    st.write("Email has been sent!")
+
+
 # Streamlit UI
 
 
 if __name__ == "__main__":
     st.title("Emotion and Speech Recognition")
     stop_flag = False
-    if st.button("Start Emotion Recognition"):
-        start_emotion_recognition()
+    col1, col2, col3, col4 = st.columns(4)
+    if col1.button("Start Emotion Recognition"):
+        start_emotion_recognition(col1)
 
-     # Create two columns for the buttons
-    col1, col2 = st.columns(2)
-    if col1.button("Start Speech Recognition"):
-        start_speech_recognition(stop_flag)
-    if col2.button("Stop Speech Recognition"):
+    # Create two columns for the buttons
+
+    if col2.button("Start Speech Recognition"):
+        start_speech_recognition(stop_flag, col2)
+    if col3.button("Stop Speech Recognition"):
         stop_flag = True
 
-    if st.button("Send email"):
+    if col4.button("Send email"):
         send_email()
