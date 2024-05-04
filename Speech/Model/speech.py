@@ -14,8 +14,8 @@ if not os.path.exists(directory):
 timestamp = time.strftime("%Y%m%d-%H%M%S")
 csv_filename = os.path.join(directory, f"speech_to_text_{timestamp}.csv")
 
-# Initialize recognizer class (for recognizing the speech)
-r = sr.Recognizer()
+
+r = sr.Recognizer() # Initialize recognizer class (for recognizing the speech)
 
 # Open the CSV file
 with open(csv_filename, 'w', newline='') as file:
