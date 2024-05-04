@@ -27,8 +27,7 @@ with open(csv_filename, 'w', newline='') as file:
         # listening the speech and store in audio_text variable
         with sr.Microphone() as source:
             print("Talk")
-            # Listen for up to 10 seconds of speech
-            audio_text = r.listen(source, timeout=10, phrase_time_limit=10)
+            audio_text = r.listen(source, timeout=10, phrase_time_limit=10) # Listen for up to 10 seconds of speech
             print("Time over, thanks")
 
         # recognize_() method will throw a request error if the API is unreachable, hence using exception handling
