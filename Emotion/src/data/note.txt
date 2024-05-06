@@ -1,0 +1,2 @@
+Download the data from the FER-2013 dataset. 
+Inside this folder, you should have the images split into train and test if you would like to train the model.
